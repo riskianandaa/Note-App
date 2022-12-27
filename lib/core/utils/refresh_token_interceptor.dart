@@ -21,7 +21,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   static const authTokenKey = 'AUTH_TOKEN';
   static const authRefreshTokenKey = 'AUTH_REFRESH_TOKEN';
   static const fcmTokenKey = 'FCM_TOKEN';
-  static const expiredMessage = 'token_not_valid';
+  static const expiredMessage = 'invalid_token';
 
   RefreshTokenInterceptor(this._storage);
 
@@ -29,13 +29,31 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final savedToken = await _savedToken;
-    final headers = {
-      'platform': Platform.isAndroid ? 'android' : 'ios',
-    };
+    
     if (savedToken != null) {
-      headers['Authorization'] = 'Bearer $savedToken';
+      final opt = Options(headers: {'Authorization': initialToken});
+      final response = await Dio(BaseOptions(baseUrl: Config.baseUrl))
+        .get('user/get-token', options: opt);
+      if (response.statusCode == HttpStatus.ok) {
+        final body = response.data as Map<String, dynamic>;
+        final token = body['token'];
+        await _storage.write(key: authTokenKey, value: token);
+
+        final headers = {
+          'Authorization' : token,
+          'platform' : Platform.isAndroid ? 'android' : 'ios'
+        };
+        return handler.next(options.copyWith(
+          headers: headers
+        ));
+      }
+    } else {
+      final headers= {
+        'Authorization' : savedToken,
+        'platform' : Platform.isAndroid ? 'android' : 'ios'
+      };
+      return handler.next(options.copyWith(headers: headers));
     }
-    return handler.next(options.copyWith(headers: headers));
   }
 
   @override
@@ -104,6 +122,10 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   Future<void> _saveToken(Map<String, dynamic> body) async {
     await _storage.write(key: authTokenKey, value: body['access']);
     await _storage.write(key: authRefreshTokenKey, value: body['refresh']);
+  }
+
+  Future<void> removeToken() async {
+    await _storage.deleteAll();
   }
 
   Future retryRequest(DioError err, ErrorInterceptorHandler handler) async {

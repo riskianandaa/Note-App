@@ -13,6 +13,7 @@ class AppButton extends StatelessWidget {
   final Color outline;
   final TextStyle? textStyle;
   final double radius;
+  final double padding;
   const AppButton({
     super.key,
     this.color = AppColors.secondary,
@@ -23,6 +24,7 @@ class AppButton extends StatelessWidget {
     this.outline = Colors.transparent,
     this.textStyle,
     this.radius = 10,
+    this.padding = 0,
   });
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class AppButton extends StatelessWidget {
         OutlinedButton(
           onPressed: isEnabled == true && !isLoading ? () => onPressed() : null,
           style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: padding),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radius),
             ),

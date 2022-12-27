@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:noteapp/core/data/model/user.dart';
+import 'package:noteapp/core/utils/status.dart';
 import 'package:noteapp/core/utils/translation.dart';
+import 'package:noteapp/ui/bloc/main_bloc.dart';
+import 'package:noteapp/ui/home/home_screen.dart';
+import 'package:noteapp/ui/note/bloc/note_bloc.dart';
+import 'package:noteapp/ui/profile/profile_screen.dart';
+
+import '../core/widgets/app_colors.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -10,19 +20,24 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   var currentScreen = 0;
+  User user = const User();
 
-  List<Widget> get screens {
-    return <Widget>[
-      Center(
-        child: Text(context.text.home),
-      ),
-      Center(
-        child: Text(context.text.notification),
-      ),
-      Center(
-        child: Text(context.text.profile),
-      ),
-    ];
+  @override
+  void initState() {
+    BlocProvider.of<NoteBloc>(context).add(const GetNote());
+    super.initState();
+  }
+
+  final screens = [
+    const HomeScreen(),
+    const ProfileScreen(),
+  ];
+
+  clearFocus() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      currentFocus.focusedChild?.unfocus();
+    }
   }
 
   List<BottomNavigationBarItem> get bottomNavBarItem {
@@ -30,33 +45,61 @@ class _MenuScreenState extends State<MenuScreen> {
       BottomNavigationBarItem(
           icon: const Icon(Icons.home), label: context.text.home),
       BottomNavigationBarItem(
-          icon: const Icon(Icons.person), label: context.text.profile),
+          icon: CircleAvatar(
+            radius: 15,
+            backgroundImage: NetworkImage(
+                user.photo != null ? user.photo! : 'https://picsum.photos/200'),
+          ),
+          label: context.text.profile),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.green,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: IndexedStack(
-        index: currentScreen,
-        children: screens,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.black,
-        items: bottomNavBarItem,
-        currentIndex: currentScreen,
-        onTap: (index) => setState(() => currentScreen = index),
-      ),
+    return BlocBuilder<MainBloc, MainState>(
+      builder: (context, state) {
+        if (state is LoginResultState) {
+          if (state.status == Status.success) {
+            user = state.data!;
+          }
+          if (state.status == Status.error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(context.text.label_error_get_user)));
+          }
+        }
+        return GestureDetector(
+          onTap: () {
+            clearFocus();
+          },
+          child: Scaffold(
+            body: IndexedStack(
+              index: currentScreen,
+              children: screens,
+            ),
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: AppColors.primary,
+              onPressed: () {
+                context.push('/note', extra: null);
+                clearFocus();
+              },
+              child: const Icon(Icons.add),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Colors.white,
+              selectedItemColor: AppColors.primary,
+              elevation: 0,
+              items: bottomNavBarItem,
+              currentIndex: currentScreen,
+              onTap: (index) {
+                setState(() => currentScreen = index);
+                clearFocus();
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

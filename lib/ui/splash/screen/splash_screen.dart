@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:noteapp/core/utils/status.dart';
+import 'package:noteapp/ui/bloc/main_bloc.dart';
 import '../widget/im_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,17 +14,26 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Future.delayed(const Duration(seconds: 3), () => context.go('/login'));
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: ImFlutter(),
+    return BlocConsumer<MainBloc, MainState>(
+      listener: (context, state) {
+        if (state is LoginResultState) {
+          Future.delayed(const Duration(seconds: 3), () {
+            if (state.status == Status.success && state.isLogin!) {
+              context.go('/menu');
+            } else if (state.status == Status.success && !state.isLogin!) {
+              context.go('/login');
+            } else if (state.status == Status.error) {
+              context.go('/login');
+            }
+          });
+        }
+      },
+      builder: (context, state) {
+        return const Scaffold(
+          body: ImFlutter(),
+        );
+      },
     );
   }
 }

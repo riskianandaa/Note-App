@@ -8,6 +8,7 @@ class AppColors {
   static const softGray = Color(0xFFF3F3F3);
 
   static const green = Color(0xFF00A89D);
+  static const secondaryGray = Color(0xFFCFCFCF);
 
   static final primarySwatch = MaterialColor(
     primary.value,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,6 +11,8 @@ import 'core/widgets/app_theme.dart';
 import 'base_app.dart';
 
 import 'di/injection.dart';
+import 'ui/bloc/main_bloc.dart';
+import 'ui/note/bloc/note_bloc.dart';
 import 'ui/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,28 +47,38 @@ class App extends StatelessWidget {
       designSize: const Size(360, 800),
       builder: (context, child) {
         final theme = AppTheme();
-        return MaterialApp.router(
-          title: 'noteapp',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            textTheme: theme.textTheme,
-            radioTheme: theme.radioTheme,
-            checkboxTheme: theme.checkBoxTheme,
-            scaffoldBackgroundColor: Colors.white,
-            appBarTheme: theme.appBarTheme,
-            inputDecorationTheme: theme.inputDecorationTheme,
-          ),
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => getIt<MainBloc>()..add(const GetUser()),
+            ),
+            BlocProvider(
+              create: (context) => getIt<NoteBloc>(),
+            ),
           ],
-          supportedLocales: const [Locale('id')],
-          builder: (context, widget) => BaseApp(child: widget),
-          routeInformationParser: router.routeInformationParser,
-          routerDelegate: router.routerDelegate,
-          routeInformationProvider: router.routeInformationProvider,
+          child: MaterialApp.router(
+            title: 'noteapp',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              textTheme: theme.textTheme,
+              radioTheme: theme.radioTheme,
+              checkboxTheme: theme.checkBoxTheme,
+              scaffoldBackgroundColor: Colors.white,
+              appBarTheme: theme.appBarTheme,
+              inputDecorationTheme: theme.inputDecorationTheme,
+            ),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('id')],
+            builder: (context, widget) => BaseApp(child: widget),
+            routeInformationParser: router.routeInformationParser,
+            routerDelegate: router.routerDelegate,
+            routeInformationProvider: router.routeInformationProvider,
+          ),
         );
       },
     );

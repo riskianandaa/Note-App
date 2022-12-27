@@ -11,12 +11,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i5;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
-import '../core/data/datasource/api/user_api.dart' as _i9;
+import '../core/data/datasource/api/note_api.dart' as _i7;
+import '../core/data/datasource/api/user_api.dart' as _i11;
 import '../core/utils/media_service.dart' as _i6;
-import '../core/utils/permission_service.dart' as _i7;
-import '../core/utils/refresh_token_interceptor.dart' as _i8;
-import 'app_modules.dart' as _i11;
-import 'network_modules.dart' as _i10;
+import '../core/utils/permission_service.dart' as _i9;
+import '../core/utils/refresh_token_interceptor.dart' as _i10;
+import '../ui/bloc/main_bloc.dart' as _i12;
+import '../ui/note/bloc/note_bloc.dart' as _i8;
+import 'app_modules.dart' as _i14;
+import 'network_modules.dart' as _i13;
 
 const String _dev = 'dev';
 // ignore_for_file: unnecessary_lambdas
@@ -41,13 +44,16 @@ _i1.GetIt $initGetIt(
   gh.singleton<_i4.EventBus>(appModule.eventBus);
   gh.singleton<_i5.FlutterSecureStorage>(appModule.storage);
   gh.factory<_i6.MediaService>(() => _i6.MediaServiceImpl());
-  gh.factory<_i7.PermissionService>(() => _i7.PermissionServiceHandler());
-  gh.factory<_i8.RefreshTokenInterceptor>(
-      () => _i8.RefreshTokenInterceptor(get<_i5.FlutterSecureStorage>()));
-  gh.factory<_i9.UserApi>(() => _i9.UserApi(get<_i3.Dio>()));
+  gh.factory<_i7.NoteApi>(() => _i7.NoteApi(get<_i3.Dio>()));
+  gh.factory<_i8.NoteBloc>(() => _i8.NoteBloc(get<_i7.NoteApi>()));
+  gh.factory<_i9.PermissionService>(() => _i9.PermissionServiceHandler());
+  gh.factory<_i10.RefreshTokenInterceptor>(
+      () => _i10.RefreshTokenInterceptor(get<_i5.FlutterSecureStorage>()));
+  gh.factory<_i11.UserApi>(() => _i11.UserApi(get<_i3.Dio>()));
+  gh.factory<_i12.MainBloc>(() => _i12.MainBloc(get<_i11.UserApi>()));
   return get;
 }
 
-class _$NetworkModule extends _i10.NetworkModule {}
+class _$NetworkModule extends _i13.NetworkModule {}
 
-class _$AppModule extends _i11.AppModule {}
+class _$AppModule extends _i14.AppModule {}

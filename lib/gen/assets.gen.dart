@@ -15,8 +15,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_copy.png
   AssetGenImage get icCopy => const AssetGenImage('assets/images/ic_copy.png');
 
+  /// File path: assets/images/ic_user.png
+  AssetGenImage get icUser => const AssetGenImage('assets/images/ic_user.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [icCopy];
+  List<AssetGenImage> get values => [icCopy, icUser];
 }
 
 class $AssetsMapsGen {

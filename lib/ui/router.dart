@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:noteapp/core/data/model/note.dart';
 import 'package:noteapp/ui/login/screen/login_screen.dart';
+import 'package:noteapp/ui/note/note_screen.dart';
+import 'package:noteapp/ui/profile/edit_profile_screen.dart';
 import 'package:noteapp/ui/register/screen/register_screen.dart';
 import '../ui/menu_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +24,20 @@ var router = GoRouter(routes: [
   GoRoute(
     path: '/register',
     builder: (context, state) => const RegisterScreen(),
+  ),
+  GoRoute(
+    path: '/profile/edit',
+    builder: (context, state) => const EditProfileScreen(),
+  ),
+  GoRoute(
+    path: '/note',
+    name: 'note',
+    builder: (context, state) {
+      Note? note = state.extra != null ? state.extra as Note : null;
+      return NoteScreen(
+        note: note,
+      );
+    },
   )
 ]);
 

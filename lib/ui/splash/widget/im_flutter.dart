@@ -10,7 +10,7 @@ class ImFlutter extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.note_alt, color: Colors.green, size: 24),
+            const Icon(Icons.note_alt, color: Colors.green, size: 24),
             Text(
               "My Note",
               style: AppTheme()

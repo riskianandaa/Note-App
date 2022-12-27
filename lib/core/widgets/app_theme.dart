@@ -5,6 +5,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTheme {
+  TextStyle contentTitle = GoogleFonts.nunito(
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w400,
+  );
+
+  TextStyle contentBody = GoogleFonts.nunito(
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w400,
+    color: AppColors.textGray,
+  );
+
+  TextStyle labelTitleMulish = GoogleFonts.mulish(
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w400,
+  );
+  
   final textTheme = TextTheme(
     headline1: GoogleFonts.poppins(
         fontSize: 89.sp, fontWeight: FontWeight.w300, letterSpacing: -1.5.sp),

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 class Config {
-  static const baseUrl = 'https://629867c8de3d7eea3c664c1a.mockapi.io';
-  static const apiKey = 'API_KEY';
+  static const baseUrl = 'http://34.128.80.67/api/';
+  static const apiKey = 'rahasia';
   static const notificationChannelId = 'noteapp_channel_id';
   static const notificationChannelName = 'noteapp notification';
   static const notificationChannelDesc = 'noteapp notification';

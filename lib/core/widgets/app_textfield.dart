@@ -12,6 +12,7 @@ class AppTextField extends StatefulWidget {
   final String? errorText;
   final Widget? endIcon;
   final Function? endIconClicked;
+  final String? Function(String?)? validator;
   final bool? readOnlyField;
   final TextInputType? keyboardType;
   const AppTextField({
@@ -19,7 +20,7 @@ class AppTextField extends StatefulWidget {
     required this.title,
     required this.hint,
     this.obscure = false,
-    this.textHintColor = Colors.white,
+    this.textHintColor = AppColors.textGray,
     this.controller,
     this.onChanged,
     this.errorText,
@@ -27,6 +28,7 @@ class AppTextField extends StatefulWidget {
     this.endIconClicked,
     this.readOnlyField,
     this.keyboardType,
+    this.validator,
   }) : super(key: key);
 
   @override
@@ -49,7 +51,7 @@ class _AppTextFieldState extends State<AppTextField> {
             style: context.textTheme.bodyText2?.copyWith(
               color: widget.errorText != null && alreadyClicked
                   ? Colors.red
-                  : focused && widget.textHintColor != Colors.white
+                  : focused
                       ? AppColors.primary
                       : widget.textHintColor,
             ),
@@ -64,7 +66,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 alreadyClicked = true;
               });
             },
-            child: TextField(
+            child: TextFormField(
               style: Theme.of(context)
                   .textTheme
                   .bodyText2
@@ -74,6 +76,13 @@ class _AppTextFieldState extends State<AppTextField> {
               onChanged: widget.onChanged,
               readOnly: widget.readOnlyField == true,
               keyboardType: widget.keyboardType,
+              validator: widget.validator ??
+                  (value) {
+                    if (value == null || value.isEmpty) {
+                      return " ${widget.title} Can't Empty";
+                    }
+                    return null;
+                  },
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
