@@ -6,15 +6,19 @@ class ApiResponse<T> {
   @JsonKey(defaultValue: 0)
   final int status;
 
-  @JsonKey(defaultValue: 'message')
-  final String message;
+  @JsonKey(name: 'message')
+  final String? message;
+
+  @JsonKey(name: 'token')
+  final String? token;
 
   @JsonKey(name: 'error')
   final String? error;
 
-  final T data;
+  @JsonKey(name: 'data')
+  final T? data;
 
-  ApiResponse(this.status, this.message, this.error, this.data);
+  ApiResponse(this.status, this.message, this.error, this.data, this.token);
 
   factory ApiResponse.fromJson(
     Map<String, dynamic> json,

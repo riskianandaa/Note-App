@@ -29,28 +29,28 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final savedToken = await _savedToken;
-    
-    if (savedToken != null) {
+
+    if (savedToken == null) {
       final opt = Options(headers: {'Authorization': initialToken});
       final response = await Dio(BaseOptions(baseUrl: Config.baseUrl))
-        .get('user/get-token', options: opt);
+          .get('user/get-token', options: opt);
       if (response.statusCode == HttpStatus.ok) {
         final body = response.data as Map<String, dynamic>;
         final token = body['token'];
         await _storage.write(key: authTokenKey, value: token);
 
         final headers = {
-          'Authorization' : token,
-          'platform' : Platform.isAndroid ? 'android' : 'ios'
+          'Authorization': token,
+          'platform': Platform.isAndroid ? 'android' : 'ios'
         };
         return handler.next(options.copyWith(
-          headers: headers
+          headers: headers,
         ));
       }
     } else {
-      final headers= {
-        'Authorization' : savedToken,
-        'platform' : Platform.isAndroid ? 'android' : 'ios'
+      final headers = {
+        'Authorization': savedToken,
+        'platform': Platform.isAndroid ? 'android' : 'ios'
       };
       return handler.next(options.copyWith(headers: headers));
     }
@@ -59,7 +59,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
     if (response.statusCode == 200 &&
-        response.realUri.path.contains('/login')) {
+        (response.realUri.path.contains('/login'))) {
       final data = response.data as Map<String, dynamic>;
       await _saveToken(data);
     }
@@ -80,10 +80,10 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
           BaseOptions(
             baseUrl: Config.baseUrl,
           ),
-        ).post('/api/refresh/', data: reqBody);
+        ).post('/user/refresh-token/', data: reqBody);
         if (response.statusCode == HttpStatus.ok) {
           final body = response.data as Map<String, dynamic>;
-          await _storage.write(key: authTokenKey, value: body['access']);
+          await _storage.write(key: authTokenKey, value: body['token']);
           await retryRequest(err, handler);
         } else {
           return handler.reject(DioErrorWrapper(
@@ -112,7 +112,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
       await _storage.read(key: authRefreshTokenKey);
 
   bool shouldRetry(DioError error) {
-    var message = error.response?.data?['code'];
+    var message = error.response?.data?['error'];
     if (message is String) {
       return message.contains(expiredMessage);
     }
@@ -120,7 +120,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
   }
 
   Future<void> _saveToken(Map<String, dynamic> body) async {
-    await _storage.write(key: authTokenKey, value: body['access']);
+    await _storage.write(key: authTokenKey, value: body['token']);
     await _storage.write(key: authRefreshTokenKey, value: body['refresh']);
   }
 
@@ -134,7 +134,7 @@ class RefreshTokenInterceptor extends QueuedInterceptorsWrapper {
       'platform': Platform.isAndroid ? 'android' : 'ios',
     };
     if (token != null) {
-      headers['Authorization'] = 'Bearer $token';
+      headers['Authorization'] = token;
     }
     final response = await Dio().fetch(err.requestOptions.copyWith(
       headers: headers,

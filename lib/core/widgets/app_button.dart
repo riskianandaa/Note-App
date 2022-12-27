@@ -58,7 +58,10 @@ class AppButton extends StatelessWidget {
               ),
               Text(
                 caption,
-                style: textStyle ?? context.textTheme.button,
+                style: textStyle ??
+                    context.textTheme.button?.copyWith(
+                        color:
+                            color == Colors.white ? AppColors.textGray : null),
               ),
             ],
           ),
