@@ -12,12 +12,16 @@ class AppSearchBar extends StatefulWidget {
     this.withElevation,
     this.readOnly = false,
     this.onChanged,
+    this.paddingSize = const EdgeInsets.all(8.0),
+    this.radius = 8.0,
   }) : super(key: key);
   final String hint;
   final Function? onClick;
   final bool? withElevation;
   final bool readOnly;
+  final EdgeInsets paddingSize;
   final Function(String)? onChanged;
+  final double radius;
 
   @override
   State<AppSearchBar> createState() => _AppSearchBarState();
@@ -56,15 +60,17 @@ class _AppSearchBarState extends State<AppSearchBar> {
             hintStyle: context.textTheme.bodyText2?.copyWith(
               color: AppColors.textGray,
             ),
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 8.w,
-            ),
+            contentPadding: widget.paddingSize,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(widget.radius),
               borderSide: BorderSide.none,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(widget.radius),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(widget.radius),
               borderSide: BorderSide.none,
             ),
             suffixIcon: showClearButton == true
