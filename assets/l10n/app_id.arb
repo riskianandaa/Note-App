@@ -1,15 +1,10 @@
 {
-    "home":"Home",
-    "notification":"Notification",
-    "profile":"Profile",
+    "app_name" : "My Note",
     "cancel":"Cancel",
-    "app_name" : "Note App",
     "home":"Home",
-    "notification":"Notification",
-    "profile":"Profile",
-    "cancel":"Cancel",
     "hint_title":"Title",
     "hint_content":"Content",
+    "home":"Home",
     "label_edited_at":"Edited At {time}",
     "@label_edited_at" : {
         "placeholders" : {
@@ -33,6 +28,10 @@
     "label_save" : "Save",
     "label_error_get_user" : "Can't get user",
     "label_username" : "Username",
+    "label_register" : "Register",
+    "label_error_empty_form" : "Form can't empty",
+    "label_error_password_not_match" : "Password not match",
+    "label_error_empty" : "Can't empty",
     "label_email" : "Email",
     "label_logout" : "Logout",
     "label_find_notes" : "Find notes",
@@ -41,10 +40,10 @@
     "label_password" : "Password",
     "label_confirm_password" : "Confirm password",
     "label_login" : "Login",
-    "label_register" : "Register",
-    "label_error_empty_form" : "Form can't empty",
-    "label_error_password_not_match" : "Password not match",
-    "label_error_empty" : "Can't empty",
     "menu_edit_profile" : "Edit Profile",
-    "menu_profile" : "Profile"
+    "menu_profile" : "Profile",
+    "notification":"Notification",
+    "profile":"Profile",
+    "notification":"Notification",
+    "profile":"Profile"
 }
