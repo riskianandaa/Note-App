@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:noteapp/core/utils/theme_extension.dart';
 
 import 'app_colors.dart';
@@ -36,14 +35,8 @@ class _AppSearchBarState extends State<AppSearchBar> {
     return GestureDetector(
       onTap: () => widget.onClick?.call(),
       child: Material(
-        color: Colors.white,
+        color: Colors.transparent,
         elevation: widget.withElevation == true ? 1 : 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: const BorderSide(
-            color: AppColors.softGray,
-          ),
-        ),
         child: TextField(
           enabled: widget.onClick == null,
           style: context.textTheme.bodyText2,
@@ -56,6 +49,8 @@ class _AppSearchBarState extends State<AppSearchBar> {
           },
           controller: controller,
           decoration: InputDecoration(
+            fillColor: AppColors.softGray,
+            filled: true,
             hintText: widget.hint,
             hintStyle: context.textTheme.bodyText2?.copyWith(
               color: AppColors.textGray,
@@ -82,8 +77,14 @@ class _AppSearchBarState extends State<AppSearchBar> {
                         showClearButton = false;
                       });
                     },
-                    child: const Icon(Icons.cancel_outlined))
-                : const Icon(Icons.search),
+                    child: const Icon(
+                      Icons.cancel,
+                      color: AppColors.primary,
+                    ))
+                : const Icon(
+                    Icons.search,
+                    color: AppColors.primary,
+                  ),
           ),
         ),
       ),

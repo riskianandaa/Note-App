@@ -8,6 +8,7 @@ class AppTheme {
   TextStyle contentTitle = GoogleFonts.nunito(
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
+    color: AppColors.textBlack
   );
 
   TextStyle contentBody = GoogleFonts.nunito(
